@@ -1,6 +1,6 @@
 ---
 - name: Start Couch Gaming VM
-  hosts: localhost
+  hosts: all
   become: yes
 
   tasks:
