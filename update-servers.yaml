@@ -20,11 +20,12 @@
 
     - name: Send discord message with package upgrade information
       uri:
-        url: "{{ url }}"
-        method: POST
-        body_format: json
-        body: '{"content": "Packages upgraded on {{ inventory_hostname }}:\n{{ package_upgrade_result.stdout | to_nice_yaml }}"}'
-        headers:
-          Content-Type: application/json
-        status_code: 204
+      url: "{{ url }}"
+      method: POST
+      body_format: json
+      body: '{"content": "Packages upgraded on {{ inventory_hostname }}:\n{{ package_upgrade_result.stdout | to_nice_yaml }}"}'
+      headers:
+        Content-Type: application/json
+      status_code: 204
       when: package_upgrade_result.changed
+      ignore_errors: yes
