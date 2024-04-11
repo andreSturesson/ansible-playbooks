@@ -22,10 +22,10 @@
 
   tasks:
     - name: Install Ansible collections
-        commands:
+        command:
           - checkout
           - ansible-galaxy collection install community.general
-          
+
     - name: Send Discord message
       community.general.discord:
         username: "{{ notify_discord_username }}"
