@@ -7,7 +7,7 @@
     - "./discord.yml"
   
   collections:
-    - community.general
+    - name: community.general
 
   vars:
     notify_discord_username: Ansible
