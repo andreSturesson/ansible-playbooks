@@ -1,0 +1,19 @@
+---
+- name: Start Couch Gaming VM
+  hosts: 10.10.10.10
+  become: yes
+
+  tasks:
+    - name: Check host connectivity
+      ping:
+      register: ping_result
+      ignore_errors: true
+
+    - name: Network boot if host is not reachable
+      command: "wakeonlan ADDMYMACADDRESSHERE"
+      when: ping_result.failed
+
+    - name: Start Couch
+      command: sudo virsh start couch
+      when: ping_result.success
+      delegate_to: 10.10.10.10
