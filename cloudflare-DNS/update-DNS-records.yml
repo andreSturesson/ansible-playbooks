@@ -1,0 +1,37 @@
+---
+- name: Update Cloudflare DNS records
+  hosts: localhost
+
+  vars_files:
+    - "./cloudflare.yml"
+    
+  tasks:
+    - name: Get current public IP
+      ansible.builtin.uri:
+        url: "https://api64.ipify.org"
+        return_content: yes
+      register: current_ip
+      failed_when: current_ip is failed
+
+    - name: List DNS records
+      community.general.cloudflare_dns:
+        zone: "sturesson.dev"
+        account_email: "andre.m.sturesson@gmail.com"
+        account_api_key: "{{ cloudflare_api_key }}"
+      register: dns_records
+      failed_when: dns_records is failed
+
+    - name: Update A records if IP has changed
+      community.general.cloudflare_dns:
+        zone: "sturesson.dev"
+        record: "{{ item.name }}"
+        record_type: "{{ item.type }}"
+        state: present
+        value: "{{ current_ip.content }}"
+        ttl: "{{ item.ttl }}"
+        proxied: "{{ item.proxied }}"
+        account_email: "andre.m.sturesson@gmail.com"
+        account_api_key: "{{ cloudflare_api_key }}"
+      loop: "{{ dns_records.zones[0].dns_records }}"
+      when: current_ip.content != item.content and item.type == 'A'
+      failed_when: item.state != 'present'
