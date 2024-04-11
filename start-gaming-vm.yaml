@@ -1,6 +1,6 @@
 ---
 - name: Start Couch Gaming VM
-  hosts: 10.10.10.10
+  hosts: all
   become: yes
 
   tasks:
@@ -16,4 +16,4 @@
     - name: Start Couch
       command: sudo virsh start couch
       when: ping_result.success
-      delegate_to: 10.10.10.10
+      delegate_to: all
