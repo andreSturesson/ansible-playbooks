@@ -6,9 +6,6 @@
   vars_files:
     - "./discord.yml"
   
-  collections:
-    - name: community.general
-
   vars:
     notify_discord_username: Ansible
 
