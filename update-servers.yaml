@@ -16,13 +16,14 @@
         autoremove: yes
         autoclean: yes
         force_apt_get: yes
+      register: package_updates
 
-    - name: Send discord message when disk space is over 80%
+    - name: Send discord message about package updated
       uri:
         url: "{{ url }}"
         method: POST
         body_format: json
-        body: '{"content": "Package updates: {{ ansible_facts.packages | to_nice_yaml }}"}'
+        body: '{"content": "Package updates: {{ package_updates.packages | map(attribute="name") | list }}"}'
         headers:
           Content-Type: application/json
         status_code: 204
