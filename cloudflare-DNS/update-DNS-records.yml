@@ -4,7 +4,7 @@
 
   vars_files:
     - "./cloudflare.yml"
-    
+
   tasks:
     - name: Get current public IP
       ansible.builtin.uri:
@@ -15,8 +15,8 @@
 
     - name: List DNS records
       community.general.cloudflare_dns:
-        zone: "sturesson.dev"
-        account_email: "andre.m.sturesson@gmail.com"
+        zone: "{{ domain }}"
+        account_email: "{{ email }}"
         account_api_key: "{{ cloudflare_api_key }}"
       register: dns_records
       failed_when: dns_records is failed
@@ -30,7 +30,7 @@
         value: "{{ current_ip.content }}"
         ttl: "{{ item.ttl }}"
         proxied: "{{ item.proxied }}"
-        account_email: "andre.m.sturesson@gmail.com"
+        account_email: "{{ email }}"
         account_api_key: "{{ cloudflare_api_key }}"
       loop: "{{ dns_records.zones[0].dns_records }}"
       when: current_ip.content != item.content and item.type == 'A'
