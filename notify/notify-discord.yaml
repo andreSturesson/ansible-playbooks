@@ -21,6 +21,11 @@
     notify_discord_send_from_host: localhost
 
   tasks:
+    - name: Install Ansible collections
+        commands:
+          - checkout
+          - ansible-galaxy collection install community.general
+          
     - name: Send Discord message
       community.general.discord:
         username: "{{ notify_discord_username }}"
