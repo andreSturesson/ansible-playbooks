@@ -11,9 +11,9 @@
         update_cache: yes
 
     - name: List available package updates
-      apt:
-        list: yes
+      shell: apt list --upgradable
       register: package_updates
+      changed_when: False 
 
     - name: Upgrade all packages
       apt:
@@ -21,15 +21,15 @@
         autoremove: yes
         autoclean: yes
         force_apt_get: yes
-      when: package_updates|changed
+      when: package_updates.stdout_lines | length > 1 
 
     - name: Send discord message about package updates
       uri:
         url: "{{ url }}"
         method: POST
         body_format: json
-        body: '{"content": "Package updates: {{ package_updates.stdout_lines }}"}'
+        body: '{"content": "Package updates: {{ package_updates.stdout }}"}'
         headers:
           Content-Type: application/json
         status_code: 204
-      when: package_updates|changed
+      when: package_updates.stdout_lines | length > 1
