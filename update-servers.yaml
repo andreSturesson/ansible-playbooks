@@ -10,20 +10,26 @@
       apt:
         update_cache: yes
 
+    - name: List available package updates
+      apt:
+        list: yes
+      register: package_updates
+
     - name: Upgrade all packages
       apt:
         upgrade: dist
         autoremove: yes
         autoclean: yes
         force_apt_get: yes
-      register: package_updates
+      when: package_updates|changed
 
-    - name: Send discord message about package updated
+    - name: Send discord message about package updates
       uri:
         url: "{{ url }}"
         method: POST
         body_format: json
-        body: '{"content": "Package updates: {{ package_updates.packages | map(attribute="name") | list }}"}'
+        body: '{"content": "Package updates: {{ package_updates.stdout_lines }}"}'
         headers:
           Content-Type: application/json
         status_code: 204
+      when: package_updates|changed
