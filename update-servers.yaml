@@ -19,7 +19,6 @@
       register: package_upgrade_result
 
     - name: Send discord message with package upgrade information
-      uri:
       url: "{{ url }}"
       method: POST
       body_format: json
